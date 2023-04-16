@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_2048/src/components/score_box.dart';
 import 'package:my_2048/src/game_board.dart';
 import 'package:my_2048/src/game_logic.dart';
+import 'package:my_2048/src/game_settings.dart';
 
 class GameScreen extends StatefulWidget {
   @override
@@ -9,24 +11,25 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController controller=  AnimationController(vsync: this, duration: Duration(seconds: 1));
+  late AnimationController controller =
+      AnimationController(vsync: this, duration: Duration(seconds: 1));
   GameBoard gameBoard = GameBoard();
-  late GameLogic gameLogic ;
+  GameSettings gameSettings = GameSettings();
+  late GameLogic gameLogic;
 
   @override
   void initState() {
     super.initState();
-    gameBoard.grid[0][0].value = 2;
-    gameBoard.grid[3][0].value = 2;
+    gameLogic = GameLogic(controller, gameBoard, gameSettings);
     gameBoard.show();
 
-    gameLogic = GameLogic(controller);
     // controller =
     //     AnimationController(vsync: this, duration: Duration(seconds: 1));
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
           gameBoard.flat_grid().forEach((e) => e.resetAnimation());
+
         });
       }
     });
@@ -88,39 +91,56 @@ class _GameScreenState extends State<GameScreen>
         appBar: AppBar(
           title: Text("2048"),
         ),
-        body: SafeArea(
-            child: GestureDetector(
-                onVerticalDragEnd: (details) {
-                  double dy = details.velocity.pixelsPerSecond.dy;
-                  if (dy < 100 && GameLogic.canSwipeUp(gameBoard.gridColumns)) {
-                    // print("Swiping up");
-                    executeSwipe(gameBoard.gridColumns);
-                  }
-                  if (dy > -100 &&
-                      GameLogic.canSwipeDown(gameBoard.gridColumns)) {
-                    // print("Swiping down");
-                    executeSwipe(gameBoard.gridColumnsReversed);
-                  }
-                },
-                onHorizontalDragEnd: (details) {
-                  double dx = details.velocity.pixelsPerSecond.dx;
-                  if (dx < 1000 && GameLogic.canSwipeLeft(gameBoard.grid)) {
-                    // print("Swiping left");
-                    executeSwipe(gameBoard.grid);
-                  }
-                  if (dx > -1000 && GameLogic.canSwipeRight(gameBoard.grid)) {
-                    // print("Swiping right");
-                    executeSwipe(gameBoard.gridReversed);
-                  }
-                },
-                child: Stack(
-                  children: stackItems,
-                ))));
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ScoreBox("Top Score :", 100),
+                ScoreBox("Current Score :", gameSettings.currentScore),
+                ScoreBox("Top Value", gameSettings.topValue),
+              ],
+            ),
+            Container(
+                margin: EdgeInsets.only(top: 40),
+                width: gridRowsSize,
+                height: gridRowsSize,
+                child: GestureDetector(
+                    onVerticalDragEnd: (details) {
+                      double dy = details.velocity.pixelsPerSecond.dy;
+                      if (dy < 100 && gameLogic.canSwipeUp()) {
+                        // print("Swiping up");
+                        executeSwipe(gameBoard.gridColumns);
+                      }
+                      if (dy > -100 && gameLogic.canSwipeDown()) {
+                        // print("Swiping down");
+                        executeSwipe(gameBoard.gridColumnsReversed);
+                      }
+                    },
+                    onHorizontalDragEnd: (details) {
+                      double dx = details.velocity.pixelsPerSecond.dx;
+                      if (dx < 1000 && gameLogic.canSwipeLeft()) {
+                        // print("Swiping left");
+                        executeSwipe(gameBoard.grid);
+                      }
+                      if (dx > -1000 && gameLogic.canSwipeRight()) {
+                        // print("Swiping right");
+                        executeSwipe(gameBoard.gridReversed);
+                      }
+                    },
+                    child: Stack(
+                      children: stackItems,
+                    ))),
+          ],
+        ));
   }
 
   void executeSwipe(List<List<Tile>> grid) {
     grid.forEach((e) => gameLogic.mergeTiles(e));
-    gameBoard.addNewNumber();
+    gameSettings.setTopValue(gameBoard.topValue);
+    gameBoard.addNewNumber(1);
     controller.forward(from: 0);
   }
 }

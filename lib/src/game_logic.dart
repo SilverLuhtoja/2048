@@ -1,23 +1,26 @@
 import 'package:flutter/animation.dart';
+import 'package:my_2048/src/game_settings.dart';
 
 import 'game_board.dart';
 
 class GameLogic {
   late AnimationController controller;
-  // final GameBoard gameBoard;
+  final GameBoard gameBoard;
+  final GameSettings gameSetting;
 
-  GameLogic(this.controller);
-
-
-
-  static bool canSwipeLeft(List<List<Tile>> grid) => grid.any(canSwipe);
-  static bool canSwipeRight(List<List<Tile>> grid) => grid.map((e) => e.reversed.toList()).any(canSwipe);
-  static bool canSwipeUp(List<List<Tile>> grid) => grid.any(canSwipe);
-  static bool canSwipeDown(List<List<Tile>> grid) => grid.map((e) => e.reversed.toList()).any(canSwipe);
+  GameLogic(this.controller, this.gameBoard,this.gameSetting);
 
 
-  // [Tile, Tile, Tile, Tile]
-  static bool canSwipe(List<Tile> tiles) {
+  bool canSwipeLeft() => gameBoard.grid.any(isSwipeable);
+  bool canSwipeRight() => gameBoard.gridReversed.any(isSwipeable);
+  bool canSwipeUp() => gameBoard.gridColumns.any(isSwipeable);
+  bool canSwipeDown() => gameBoard.gridColumnsReversed.any(isSwipeable);
+  // static bool canSwipeLeft(List<List<Tile>> grid) => grid.any(canSwipe);
+  // static bool canSwipeUp(List<List<Tile>> grid) => grid.any(canSwipe);
+  // static bool canSwipeRight(List<List<Tile>> grid) => grid.map((e) => e.reversed.toList()).any(canSwipe);
+  // static bool canSwipeDown(List<List<Tile>> grid) => grid.map((e) => e.reversed.toList()).any(canSwipe);
+
+  static bool isSwipeable(List<Tile> tiles) {
     for (int i = 0; i < tiles.length; i++) {
       if (tiles[i].value == 0) {
         if (tiles.skip(i + 1).any((e) => e.value != 0)) return true;
@@ -32,7 +35,8 @@ class GameLogic {
     return false;
   }
 
-  // static mergeTiles(List<Tile> tiles, AnimationController controller) {
+  // THIS DOES A LOT OF THINGS
+  // TODO: try to separate by refactoring
   List<Tile> mergeTiles(List<Tile> tiles) {
     for (int i = 0; i < tiles.length; i++) {
       // skip current iteration amount, it is already assigned
@@ -57,6 +61,7 @@ class GameLogic {
             nextValuedTile.changeTileValue(controller,resultValue);
             nextValuedTile.value = 0;
             firstValuedTile.changeTileValue(controller, 0);
+            gameSetting.setCurrentScore(gameSetting.currentScore + resultValue);
           }
           firstValuedTile.value = 0;
           tiles[i].value = resultValue;
@@ -64,5 +69,10 @@ class GameLogic {
       }
     }
     return tiles;
+  }
+
+  // TODO: Win and loose logic
+  bool isGameOver(){
+    return false;
   }
 }

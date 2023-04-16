@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/animation.dart';
 
 class GameBoard {
@@ -7,6 +5,7 @@ class GameBoard {
 
   GameBoard() {
     grid = _generate_grid();
+    addNewNumber(2);
   }
 
   void show() {
@@ -17,10 +16,6 @@ class GameBoard {
       }).toList()}\n";
     }
     print(allList);
-  }
-
-  List<List<Tile>> _generate_grid() {
-    return List.generate(4, (y) => List.generate(4, (x) => Tile(x, y, 0)));
   }
 
   Iterable<Tile> flat_grid() => grid.expand((e) => e);
@@ -34,10 +29,22 @@ class GameBoard {
   List<List<Tile>> get gridReversed =>
       grid.map((e) => e.reversed.toList()).toList();
 
-  void addNewNumber(){
+  List<List<Tile>> _generate_grid() {
+    return List.generate(4, (y) => List.generate(4, (x) => Tile(x, y, 0)));
+  }
+
+  void addNewNumber(int numbersToAdd) {
     List<Tile> allZeroedTiles = flat_grid().where((e) => e.value == 0).toList();
     allZeroedTiles.shuffle();
-    allZeroedTiles.first.value = 2;
+    for (int i = 0; i < numbersToAdd; i++) {
+      allZeroedTiles[i].value = 2;
+    }
+  }
+
+  int get topValue {
+    List<Tile> list = flat_grid().toList();
+    list.sort((a, b) => b.value.compareTo(a.value));
+    return list.first.value;
   }
 }
 
