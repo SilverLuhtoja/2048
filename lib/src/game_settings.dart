@@ -1,16 +1,20 @@
 class GameSettings {
   int _topValue = 2;
   int _currentScore = 0;
-  late int _topScore;
+  late int _topScore = 0;
 
-  GameSettings() {
-    this._topScore = getTopScore();
+  GameSettings() {}
+
+  GameSettings.fromJson(Map<String, dynamic> json) {
+    _topScore = json['top_score']!;
   }
+
+  Map<String, int> toJson() => {"top_score": _topScore};
 
   // TODO: have to save somewhere those high scores
-  int getTopScore() {
-    return 100;
-  }
+  // Future<String> getTopScore() async {
+  //   return await readFile();
+  // }
 
   get topValue => _topValue;
 
@@ -22,7 +26,12 @@ class GameSettings {
 
   void setCurrentScore(int value) => _currentScore = value;
 
-  void setTopScore(int value) => _topScore = value;
+  // void setTopScore(int value) => _topScore = value;
+  void setTopScore(int value) {
+    print("Setting top score to: $value");
+    _topScore = value;
+  }
 
-// void setTopValue(int topValue) {}
+  bool isCurrentScoreBiggerThanTopScore() =>
+      _currentScore > _topScore && currentScore != 0;
 }

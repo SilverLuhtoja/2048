@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_2048/src/components/score_box.dart';
+import 'package:my_2048/src/utils/filer.dart';
 import 'package:my_2048/src/game_board.dart';
 import 'package:my_2048/src/game_logic.dart';
 import 'package:my_2048/src/game_settings.dart';
@@ -17,12 +18,21 @@ class _GameScreenState extends State<GameScreen>
   GameSettings gameSettings = GameSettings();
   late GameLogic gameLogic;
 
+  void updateTopScore() => readFile().then((value) => gameSettings.setTopScore(value));
+  void setNewTopScore() {
+    if (gameSettings.isCurrentScoreBiggerThanTopScore()) {
+      gameSettings.setTopScore(gameSettings.currentScore);
+      writeFile(gameSettings);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     gameLogic = GameLogic(controller, gameBoard, gameSettings);
     gameBoard.show();
-
+    updateTopScore();
+    // gameSettings.setTopValue(int.parse(readFile().toString()));
     // controller =
     //     AnimationController(vsync: this, duration: Duration(seconds: 1));
     controller.addStatusListener((status) {
@@ -98,7 +108,7 @@ class _GameScreenState extends State<GameScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ScoreBox("Top Score :", 100),
+                ScoreBox("Top Score :", gameSettings.topScore),
                 ScoreBox("Current Score :", gameSettings.currentScore),
                 ScoreBox("Top Value", gameSettings.topValue),
               ],
@@ -137,9 +147,10 @@ class _GameScreenState extends State<GameScreen>
         ));
   }
 
-  void executeSwipe(List<List<Tile>> grid) {
+  void executeSwipe(List<List<Tile>> grid)  {
     grid.forEach((e) => gameLogic.mergeTiles(e));
     gameSettings.setTopValue(gameBoard.topValue);
+    setNewTopScore();
     gameBoard.addNewNumber(1);
     controller.forward(from: 0);
   }

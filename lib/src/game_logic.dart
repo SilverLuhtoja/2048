@@ -36,7 +36,7 @@ class GameLogic {
   }
 
   // THIS DOES A LOT OF THINGS
-  // TODO: try to separate by refactoring
+  // TODO: try to refactor
   List<Tile> mergeTiles(List<Tile> tiles) {
     for (int i = 0; i < tiles.length; i++) {
       // skip current iteration amount, it is already assigned
