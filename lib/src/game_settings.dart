@@ -3,7 +3,7 @@ class GameSettings {
   int _currentScore = 0;
   late int _topScore = 0;
 
-  GameSettings() {}
+  GameSettings();
 
   GameSettings.fromJson(Map<String, dynamic> json) {
     _topScore = json['top_score']!;

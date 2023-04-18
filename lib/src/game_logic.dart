@@ -73,6 +73,7 @@ class GameLogic {
 
   // TODO: Win and loose logic
   bool isGameOver(){
+    if (gameSetting.currentScore == 2048) return true;
     return false;
   }
 }

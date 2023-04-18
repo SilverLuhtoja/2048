@@ -1,12 +1,17 @@
+import 'package:flutter/animation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:my_2048/src/game_board.dart';
 import 'package:my_2048/src/game_logic.dart';
+@GenerateNiceMocks([MockSpec<GameSettings>()])
+import 'package:my_2048/src/game_settings.dart';
 
-
+import 'game_logic_test.mocks.dart';
+import 'test_helpers.dart';
 
 void main() {
-
-  group('GameLogic.canSwipe - tests to check if user is able to swipe', () {
+  group('GameLogic.canSwipe - is user able to swipe', () {
     final testCases = [
       [0, 0, 4, 0, true],
       [0, 2, 2, 0, true],
@@ -24,6 +29,30 @@ void main() {
       bool result = GameLogic.isSwipeable(tileListOfIntValues(givenList));
       String testName = 'when given $givenList then it returns $expectedResult';
       test(testName, () => expect(result, expectedResult));
+    });
+  });
+
+  group('GameLogic.isGameOver - is game over', () {
+    AnimationController controller = AnimationControllerMock();
+    var mockGameSetting = MockGameSettings();
+    var mockGameBoard = MockGameBoard();
+    var logic = GameLogic(controller, mockGameBoard, mockGameSetting);
+    const winCase = 2048;
+    final noMovesCase = [
+      [2, 4, 8, 4],
+      [4, 16, 4, 2],
+      [32, 64, 32, 4],
+      [2, 4, 2, 8]
+    ];
+
+    test('when currentScore == 2048, it returns true', () {
+      when(mockGameSetting.currentScore).thenReturn(winCase);
+      expect(logic.isGameOver(), true);
+    });
+
+    test('when currentScore != 2048, it returns false', () {
+      when(mockGameSetting.currentScore).thenReturn(0);
+      expect(logic.isGameOver(), false);
     });
   });
 
