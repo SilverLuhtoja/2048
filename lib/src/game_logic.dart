@@ -8,19 +8,22 @@ class GameLogic {
   final GameBoard gameBoard;
   final GameSettings gameSetting;
 
-  GameLogic(this.controller, this.gameBoard,this.gameSetting);
+  GameLogic(this.controller, this.gameBoard, this.gameSetting);
 
+  bool canSwipeLeft() => gameBoard.grid.any(isSwipeAble);
 
-  bool canSwipeLeft() => gameBoard.grid.any(isSwipeable);
-  bool canSwipeRight() => gameBoard.gridReversed.any(isSwipeable);
-  bool canSwipeUp() => gameBoard.gridColumns.any(isSwipeable);
-  bool canSwipeDown() => gameBoard.gridColumnsReversed.any(isSwipeable);
+  bool canSwipeRight() => gameBoard.gridReversed.any(isSwipeAble);
+
+  bool canSwipeUp() => gameBoard.gridColumns.any(isSwipeAble);
+
+  bool canSwipeDown() => gameBoard.gridColumnsReversed.any(isSwipeAble);
+
   // static bool canSwipeLeft(List<List<Tile>> grid) => grid.any(canSwipe);
   // static bool canSwipeUp(List<List<Tile>> grid) => grid.any(canSwipe);
   // static bool canSwipeRight(List<List<Tile>> grid) => grid.map((e) => e.reversed.toList()).any(canSwipe);
   // static bool canSwipeDown(List<List<Tile>> grid) => grid.map((e) => e.reversed.toList()).any(canSwipe);
 
-  static bool isSwipeable(List<Tile> tiles) {
+  static bool isSwipeAble(List<Tile> tiles) {
     for (int i = 0; i < tiles.length; i++) {
       if (tiles[i].value == 0) {
         if (tiles.skip(i + 1).any((e) => e.value != 0)) return true;
@@ -40,8 +43,8 @@ class GameLogic {
   List<Tile> mergeTiles(List<Tile> tiles) {
     for (int i = 0; i < tiles.length; i++) {
       // skip current iteration amount, it is already assigned
-      Iterable<Tile> nonZeroTiles = tiles.skip(i).skipWhile((tile) => tile.value == 0);
-
+      Iterable<Tile> nonZeroTiles =
+          tiles.skip(i).skipWhile((tile) => tile.value == 0);
 
       if (nonZeroTiles.isNotEmpty) {
         Tile firstValuedTile = nonZeroTiles.first;
@@ -58,7 +61,7 @@ class GameLogic {
           if (nextValuedTile.value == firstValuedTile.value) {
             resultValue += nextValuedTile.value;
             nextValuedTile.moveTo(controller, tiles[i].x, tiles[i].y);
-            nextValuedTile.changeTileValue(controller,resultValue);
+            nextValuedTile.changeTileValue(controller, resultValue);
             nextValuedTile.value = 0;
             firstValuedTile.changeTileValue(controller, 0);
             gameSetting.setCurrentScore(gameSetting.currentScore + resultValue);
@@ -71,9 +74,27 @@ class GameLogic {
     return tiles;
   }
 
-  // TODO: Win and loose logic
-  bool isGameOver(){
-    if (gameSetting.currentScore == 2048) return true;
-    return false;
+  void resetGame(){
+      gameSetting.reset();
+      gameBoard.reset();
+  }
+
+  bool isGameOver() {
+    Iterable<Tile> zeroValueList = gameBoard.flat_grid().where((e) => e.value == 0);
+    if (gameSetting.topValue == 2048) return true;
+
+    // still some moves left
+    if (zeroValueList.isNotEmpty) {
+      return false;
+    }
+
+    if (zeroValueList.isEmpty) {
+      if (canSwipeLeft()) return false;
+      if (canSwipeRight()) return false;
+      if (canSwipeUp()) return false;
+      if (canSwipeDown()) return false;
+    }
+
+    return true;
   }
 }

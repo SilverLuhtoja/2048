@@ -46,6 +46,11 @@ class GameBoard {
     list.sort((a, b) => b.value.compareTo(a.value));
     return list.first.value;
   }
+
+  void reset(){
+    grid = _generate_grid();
+    addNewNumber(2);
+  }
 }
 
 class Tile {

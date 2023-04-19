@@ -126,6 +126,15 @@ class MockGameBoard extends _i1.Mock implements _i3.GameBoard {
         returnValueForMissingStub: <_i3.Tile>[],
       ) as Iterable<_i3.Tile>);
   @override
+  Iterable<_i3.Tile> flat_column_grid() => (super.noSuchMethod(
+        Invocation.method(
+          #flat_column_grid,
+          [],
+        ),
+        returnValue: <_i3.Tile>[],
+        returnValueForMissingStub: <_i3.Tile>[],
+      ) as Iterable<_i3.Tile>);
+  @override
   void addNewNumber(int? numbersToAdd) => super.noSuchMethod(
         Invocation.method(
           #addNewNumber,

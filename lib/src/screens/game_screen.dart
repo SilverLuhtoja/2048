@@ -15,15 +15,13 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController controller = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 200));
   GameBoard gameBoard = GameBoard();
   GameSettings gameSettings = GameSettings();
+  late AnimationController controller;
   late GameLogic gameLogic;
+  bool isGameOver = false;
 
-  bool isAbleToPlay = false;
-
-  void updateTopScore() =>
+  void initTopScore() =>
       readFile().then((value) => gameSettings.setTopScore(value));
 
   void setNewTopScore() {
@@ -36,9 +34,14 @@ class _GameScreenState extends State<GameScreen>
   @override
   void initState() {
     super.initState();
+    controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 200));
     gameLogic = GameLogic(controller, gameBoard, gameSettings);
-    gameBoard.show();
-    updateTopScore();
+    initTopScore();
+
+    gameBoard.grid[0][0].value = 1024;
+    gameBoard.grid[1][0].value = 1024;
+
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
@@ -54,9 +57,9 @@ class _GameScreenState extends State<GameScreen>
     grid.forEach((e) => gameLogic.mergeTiles(e));
     gameSettings.setTopValue(gameBoard.topValue);
     setNewTopScore();
-    gameBoard.addNewNumber(1);
     controller.forward(from: 0);
-    //TODO: check gameEnd
+    gameBoard.addNewNumber(1);
+    if (gameLogic.isGameOver()) setState(() => isGameOver = true);
   }
 
   @override
@@ -122,40 +125,41 @@ class _GameScreenState extends State<GameScreen>
                 child: GestureDetector(
                   onVerticalDragEnd: (details) {
                     double dy = details.velocity.pixelsPerSecond.dy;
-                    if (dy < 100 && gameLogic.canSwipeUp()) {
-                      // print("Swiping up");
+                    if (dy < 250 && gameLogic.canSwipeUp() && !isGameOver) {
+                      // print("up");
                       executeSwipe(gameBoard.gridColumns);
                     }
-                    if (dy > -100 && gameLogic.canSwipeDown()) {
-                      // print("Swiping down");
+                    if (dy > -250 && gameLogic.canSwipeDown() && !isGameOver) {
+                      // print("down");
                       executeSwipe(gameBoard.gridColumnsReversed);
                     }
                   },
                   onHorizontalDragEnd: (details) {
                     double dx = details.velocity.pixelsPerSecond.dx;
-                    if (dx < 1000 && gameLogic.canSwipeLeft()) {
-                      // print("Swiping left");
+                    if (dx < 1000 && gameLogic.canSwipeLeft() && !isGameOver) {
+                      // print("left");
                       executeSwipe(gameBoard.grid);
                     }
-                    if (dx > -1000 && gameLogic.canSwipeRight()) {
-                      // print("Swiping right");
+                    if (dx > -1000 &&
+                        gameLogic.canSwipeRight() &&
+                        !isGameOver) {
+                      // print("right");
                       executeSwipe(gameBoard.gridReversed);
                     }
                   },
                   child: Container(
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: tileBackgroundColor, width: 4),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black26,
-                              spreadRadius: 5,
-                              blurRadius: 5)
-                        ]),
-                    child: isAbleToPlay
-                        ? Stack(children: stackItems)
-                        : gameoverSection(),
-                  ),
+                      decoration: BoxDecoration(
+                          border:
+                              Border.all(color: tileBackgroundColor, width: 4),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black26,
+                                spreadRadius: 5,
+                                blurRadius: 5)
+                          ]),
+                      child: isGameOver
+                          ? gameoverSection()
+                          : Stack(children: stackItems)),
                 )),
           ],
         ));
@@ -212,7 +216,10 @@ class _GameScreenState extends State<GameScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FilledButton(
-                onPressed: () {},
+                onPressed: () => setState(() {
+                      isGameOver = false;
+                      gameLogic.resetGame();
+                    }),
                 style: FilledButton.styleFrom(
                     backgroundColor: tileBackgroundColor),
                 child: const Text("New Game")),

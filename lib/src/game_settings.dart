@@ -11,11 +11,6 @@ class GameSettings {
 
   Map<String, int> toJson() => {"top_score": _topScore};
 
-  // TODO: have to save somewhere those high scores
-  // Future<String> getTopScore() async {
-  //   return await readFile();
-  // }
-
   get topValue => _topValue;
 
   get currentScore => _currentScore;
@@ -26,12 +21,13 @@ class GameSettings {
 
   void setCurrentScore(int value) => _currentScore = value;
 
-  // void setTopScore(int value) => _topScore = value;
-  void setTopScore(int value) {
-    print("Setting top score to: $value");
-    _topScore = value;
-  }
+  void setTopScore(int value) => _topScore = value;
 
   bool isCurrentScoreBiggerThanTopScore() =>
       _currentScore > _topScore && currentScore != 0;
+
+  void reset(){
+    setTopValue(2);
+    setCurrentScore(0);
+  }
 }

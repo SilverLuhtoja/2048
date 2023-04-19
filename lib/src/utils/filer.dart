@@ -18,14 +18,14 @@ Future<File> get _localFile async {
 }
 
 Future<File> writeFile(GameSettings settings) async {
-  printWarning("WRITING");
+  // printWarning("WRITING");
 
   final file = await _localFile;
   return file.writeAsString(jsonEncode(settings));
 }
 
 Future<int> readFile() async {
-  printWarning("READING");
+  // printWarning("READING");
 
   try {
     final file = await _localFile;
