@@ -1,16 +1,32 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:my_2048/src/game_board.dart';
-import 'package:my_2048/src/game_logic.dart';
-
-@GenerateNiceMocks([MockSpec<GameState>()])
-import 'package:my_2048/src/game_state.dart';
-
+import 'package:my_2048/src/models/game_board.dart';
+import 'package:my_2048/src/models/game_logic.dart';
 import 'game_logic_test.mocks.dart';
-import 'test_helpers.dart';
+
+
+// flutter pub run build_runner build
+@GenerateNiceMocks([MockSpec<GameState>()])
+import 'package:my_2048/src/models/game_state.dart';
+
+@GenerateNiceMocks([MockSpec<AnimationController>()])
+import 'package:flutter/animation.dart';
 
 void main() {
+  late MockAnimationController controller = MockAnimationController();
+  late MockGameState mockGameState= MockGameState();
+  late GameBoard gameBoard= GameBoard(4);
+  late GameLogic logic= GameLogic(controller, gameBoard, mockGameState);
+
+  // happens before every test
+  setUp(() {
+    controller = MockAnimationController();
+    mockGameState = MockGameState();
+    gameBoard = GameBoard(4);
+    logic = GameLogic(controller, gameBoard, mockGameState);
+  });
+
   group('GameLogic.isSwipeAble - is user able to swipe', () {
     final testCases = [
       [0, 0, 4, 0, true],
@@ -33,18 +49,7 @@ void main() {
   });
 
   group('GameLogic.isGameOver - is game over', () {
-    late AnimationControllerMock controller;
-    late MockGameState mockGameState;
-    late GameBoard gameBoard;
-    late GameLogic logic;
     const winCase = 2048;
-
-    setUp(() {
-      controller = AnimationControllerMock();
-      mockGameState = MockGameState();
-      gameBoard = GameBoard(4);
-      logic = GameLogic(controller, gameBoard, mockGameState);
-    });
 
     test('when currentScore == 2048, it returns true', () {
       when(mockGameState.topValue).thenReturn(winCase);
@@ -76,27 +81,27 @@ void main() {
     });
   });
 
-  // TODO: NEED TO MOCK AnimationController to pass this or separate animations
-  // group('GameLogic.mergeTiles() - tests to check if they merge correctly', () {
-  //   final testCases = [
-  //     [[0, 2, 2, 0], [4, 0, 0, 0]],
-  //     [[0, 2, 4, 0], [2, 4, 0, 0]],
-  //     [[2, 4, 0, 0], [2, 4, 0, 0]],
-  //     [[2, 0, 4, 0], [2, 4, 0, 0]],
-  //     [[4, 2, 2, 8], [4, 4, 8, 0]],
-  //     [[2, 4, 2, 2], [2, 4, 4, 0]],
-  //     [[2, 0, 0, 2], [4, 0, 0, 0]],
-  //   ];
-  //
-  //   testCases.forEach((testCase) {
-  //     List<Tile> givenList = tileListOfIntValues(testCase[0]);
-  //     List<int?> expectedResult = intListOfTileValues(
-  //         tileListOfIntValues(testCase[1]));
-  //     List<int?> result = intListOfTileValues(GameLogic.mergeTiles(givenList,_));
-  //     String testName = 'when given $givenList then it return $expectedResult';
-  //     test(testName, () =>  expect(result, expectedResult));
-  //   });
-  // });
+  group('GameLogic.mergeTiles() - tests to check if they merge correctly', () {
+    final testCases = [
+      [[0, 2, 2, 0], [4, 0, 0, 0]],
+      [[0, 2, 4, 0], [2, 4, 0, 0]],
+      [[2, 4, 0, 0], [2, 4, 0, 0]],
+      [[2, 0, 4, 0], [2, 4, 0, 0]],
+      [[4, 2, 2, 8], [4, 4, 8, 0]],
+      [[2, 4, 2, 2], [2, 4, 4, 0]],
+      [[2, 0, 0, 2], [4, 0, 0, 0]],
+    ];
+
+    testCases.forEach((testCase) {
+      when(mockGameState.currentScore).thenReturn(2);
+      List<Tile> givenList = tileListOfIntValues(testCase[0]);
+      List<int?> expectedResult = intListOfTileValues(
+          tileListOfIntValues(testCase[1]));
+      List<int?> result = intListOfTileValues(logic.moveAndMergeTiles(givenList));
+      String testName = 'when given $givenList then it return $expectedResult';
+      test(testName, () =>  expect(result, expectedResult));
+    });
+  });
 }
 
 List<Tile> tileListOfIntValues(List<Object> list) {

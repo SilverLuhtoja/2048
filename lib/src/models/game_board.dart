@@ -24,7 +24,8 @@ class GameBoard {
 
   List<List<Tile>> get gridColumns =>
       // List.generate(4, (x) => List.generate(4, (y) => grid[y][x]));
-      List.generate(gridSize, (x) => List.generate(gridSize, (y) => grid[y][x]));
+      List.generate(
+          gridSize, (x) => List.generate(gridSize, (y) => grid[y][x]));
 
   List<List<Tile>> get gridColumnsReversed =>
       gridColumns.map((e) => e.reversed.toList()).toList();
@@ -36,12 +37,13 @@ class GameBoard {
     // return List.generate(4, (y) => List.generate(4, (x) => Tile(x, y, 0)));
     Random random = new Random();
     // List<List<Tile>> generatedList =  List.generate(4, (y) => List.generate(4, (x) => Tile(x, y, 0)));
-    List<List<Tile>> generatedList =  List.generate(gridSize, (y) => List.generate(gridSize, (x) => Tile(x, y, 0)));
+    List<List<Tile>> generatedList = List.generate(
+        gridSize, (y) => List.generate(gridSize, (x) => Tile(x, y, 0)));
     List<Tile> expandedList = generatedList.expand((e) => e).toList();
-    int numbersToAdd  = random.nextInt(2) + 3;
+    int numbersToAdd = random.nextInt(2) + 3;
 
     expandedList.shuffle();
-    for (int i = 0 ; i < numbersToAdd; i++){
+    for (int i = 0; i < numbersToAdd; i++) {
       expandedList[i].value = random.nextInt(2) > 0 ? 2 : 4;
     }
 
@@ -59,7 +61,6 @@ class GameBoard {
     list.sort((a, b) => b.value.compareTo(a.value));
     return list.first.value;
   }
-
 }
 
 class Tile {

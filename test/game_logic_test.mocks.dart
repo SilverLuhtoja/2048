@@ -3,8 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'dart:ui' as _i8;
+
+import 'package:flutter/physics.dart' as _i7;
+import 'package:flutter/scheduler.dart' as _i3;
+import 'package:flutter/src/animation/animation.dart' as _i2;
+import 'package:flutter/src/animation/animation_controller.dart' as _i5;
+import 'package:flutter/src/animation/curves.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:my_2048/src/game_state.dart' as _i2;
+import 'package:my_2048/src/models/game_state.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -17,10 +24,44 @@ import 'package:my_2048/src/game_state.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeAnimation_0<T> extends _i1.SmartFake implements _i2.Animation<T> {
+  _FakeAnimation_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeTickerFuture_1 extends _i1.SmartFake implements _i3.TickerFuture {
+  _FakeTickerFuture_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [GameState].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGameState extends _i1.Mock implements _i2.GameState {
+class MockGameState extends _i1.Mock implements _i4.GameState {
+  @override
+  int get gridSize => (super.noSuchMethod(
+        Invocation.getter(#gridSize),
+        returnValue: 0,
+        returnValueForMissingStub: 0,
+      ) as int);
+  @override
+  set gridSize(int? _gridSize) => super.noSuchMethod(
+        Invocation.setter(
+          #gridSize,
+          _gridSize,
+        ),
+        returnValueForMissingStub: null,
+      );
   @override
   Map<String, int> toJson() => (super.noSuchMethod(
         Invocation.method(
@@ -63,4 +104,478 @@ class MockGameState extends _i1.Mock implements _i2.GameState {
         returnValue: false,
         returnValueForMissingStub: false,
       ) as bool);
+}
+
+/// A class which mocks [AnimationController].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAnimationController extends _i1.Mock
+    implements _i5.AnimationController {
+  @override
+  double get lowerBound => (super.noSuchMethod(
+        Invocation.getter(#lowerBound),
+        returnValue: 0.0,
+        returnValueForMissingStub: 0.0,
+      ) as double);
+  @override
+  double get upperBound => (super.noSuchMethod(
+        Invocation.getter(#upperBound),
+        returnValue: 0.0,
+        returnValueForMissingStub: 0.0,
+      ) as double);
+  @override
+  _i5.AnimationBehavior get animationBehavior => (super.noSuchMethod(
+        Invocation.getter(#animationBehavior),
+        returnValue: _i5.AnimationBehavior.normal,
+        returnValueForMissingStub: _i5.AnimationBehavior.normal,
+      ) as _i5.AnimationBehavior);
+  @override
+  set duration(Duration? _duration) => super.noSuchMethod(
+        Invocation.setter(
+          #duration,
+          _duration,
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  set reverseDuration(Duration? _reverseDuration) => super.noSuchMethod(
+        Invocation.setter(
+          #reverseDuration,
+          _reverseDuration,
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  _i2.Animation<double> get view => (super.noSuchMethod(
+        Invocation.getter(#view),
+        returnValue: _FakeAnimation_0<double>(
+          this,
+          Invocation.getter(#view),
+        ),
+        returnValueForMissingStub: _FakeAnimation_0<double>(
+          this,
+          Invocation.getter(#view),
+        ),
+      ) as _i2.Animation<double>);
+  @override
+  double get value => (super.noSuchMethod(
+        Invocation.getter(#value),
+        returnValue: 0.0,
+        returnValueForMissingStub: 0.0,
+      ) as double);
+  @override
+  set value(double? newValue) => super.noSuchMethod(
+        Invocation.setter(
+          #value,
+          newValue,
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  double get velocity => (super.noSuchMethod(
+        Invocation.getter(#velocity),
+        returnValue: 0.0,
+        returnValueForMissingStub: 0.0,
+      ) as double);
+  @override
+  bool get isAnimating => (super.noSuchMethod(
+        Invocation.getter(#isAnimating),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+  @override
+  _i2.AnimationStatus get status => (super.noSuchMethod(
+        Invocation.getter(#status),
+        returnValue: _i2.AnimationStatus.dismissed,
+        returnValueForMissingStub: _i2.AnimationStatus.dismissed,
+      ) as _i2.AnimationStatus);
+  @override
+  bool get isDismissed => (super.noSuchMethod(
+        Invocation.getter(#isDismissed),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+  @override
+  bool get isCompleted => (super.noSuchMethod(
+        Invocation.getter(#isCompleted),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+  @override
+  void resync(_i3.TickerProvider? vsync) => super.noSuchMethod(
+        Invocation.method(
+          #resync,
+          [vsync],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void reset() => super.noSuchMethod(
+        Invocation.method(
+          #reset,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  _i3.TickerFuture forward({double? from}) => (super.noSuchMethod(
+        Invocation.method(
+          #forward,
+          [],
+          {#from: from},
+        ),
+        returnValue: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #forward,
+            [],
+            {#from: from},
+          ),
+        ),
+        returnValueForMissingStub: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #forward,
+            [],
+            {#from: from},
+          ),
+        ),
+      ) as _i3.TickerFuture);
+  @override
+  _i3.TickerFuture reverse({double? from}) => (super.noSuchMethod(
+        Invocation.method(
+          #reverse,
+          [],
+          {#from: from},
+        ),
+        returnValue: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #reverse,
+            [],
+            {#from: from},
+          ),
+        ),
+        returnValueForMissingStub: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #reverse,
+            [],
+            {#from: from},
+          ),
+        ),
+      ) as _i3.TickerFuture);
+  @override
+  _i3.TickerFuture animateTo(
+    double? target, {
+    Duration? duration,
+    _i6.Curve? curve = _i6.Curves.linear,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #animateTo,
+          [target],
+          {
+            #duration: duration,
+            #curve: curve,
+          },
+        ),
+        returnValue: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #animateTo,
+            [target],
+            {
+              #duration: duration,
+              #curve: curve,
+            },
+          ),
+        ),
+        returnValueForMissingStub: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #animateTo,
+            [target],
+            {
+              #duration: duration,
+              #curve: curve,
+            },
+          ),
+        ),
+      ) as _i3.TickerFuture);
+  @override
+  _i3.TickerFuture animateBack(
+    double? target, {
+    Duration? duration,
+    _i6.Curve? curve = _i6.Curves.linear,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #animateBack,
+          [target],
+          {
+            #duration: duration,
+            #curve: curve,
+          },
+        ),
+        returnValue: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #animateBack,
+            [target],
+            {
+              #duration: duration,
+              #curve: curve,
+            },
+          ),
+        ),
+        returnValueForMissingStub: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #animateBack,
+            [target],
+            {
+              #duration: duration,
+              #curve: curve,
+            },
+          ),
+        ),
+      ) as _i3.TickerFuture);
+  @override
+  _i3.TickerFuture repeat({
+    double? min,
+    double? max,
+    bool? reverse = false,
+    Duration? period,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #repeat,
+          [],
+          {
+            #min: min,
+            #max: max,
+            #reverse: reverse,
+            #period: period,
+          },
+        ),
+        returnValue: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #repeat,
+            [],
+            {
+              #min: min,
+              #max: max,
+              #reverse: reverse,
+              #period: period,
+            },
+          ),
+        ),
+        returnValueForMissingStub: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #repeat,
+            [],
+            {
+              #min: min,
+              #max: max,
+              #reverse: reverse,
+              #period: period,
+            },
+          ),
+        ),
+      ) as _i3.TickerFuture);
+  @override
+  _i3.TickerFuture fling({
+    double? velocity = 1.0,
+    _i7.SpringDescription? springDescription,
+    _i5.AnimationBehavior? animationBehavior,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #fling,
+          [],
+          {
+            #velocity: velocity,
+            #springDescription: springDescription,
+            #animationBehavior: animationBehavior,
+          },
+        ),
+        returnValue: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #fling,
+            [],
+            {
+              #velocity: velocity,
+              #springDescription: springDescription,
+              #animationBehavior: animationBehavior,
+            },
+          ),
+        ),
+        returnValueForMissingStub: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #fling,
+            [],
+            {
+              #velocity: velocity,
+              #springDescription: springDescription,
+              #animationBehavior: animationBehavior,
+            },
+          ),
+        ),
+      ) as _i3.TickerFuture);
+  @override
+  _i3.TickerFuture animateWith(_i7.Simulation? simulation) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #animateWith,
+          [simulation],
+        ),
+        returnValue: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #animateWith,
+            [simulation],
+          ),
+        ),
+        returnValueForMissingStub: _FakeTickerFuture_1(
+          this,
+          Invocation.method(
+            #animateWith,
+            [simulation],
+          ),
+        ),
+      ) as _i3.TickerFuture);
+  @override
+  void stop({bool? canceled = true}) => super.noSuchMethod(
+        Invocation.method(
+          #stop,
+          [],
+          {#canceled: canceled},
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void dispose() => super.noSuchMethod(
+        Invocation.method(
+          #dispose,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  String toStringDetails() => (super.noSuchMethod(
+        Invocation.method(
+          #toStringDetails,
+          [],
+        ),
+        returnValue: '',
+        returnValueForMissingStub: '',
+      ) as String);
+  @override
+  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #addListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+        Invocation.method(
+          #removeListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void addStatusListener(_i2.AnimationStatusListener? listener) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #addStatusListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void removeStatusListener(_i2.AnimationStatusListener? listener) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #removeStatusListener,
+          [listener],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  _i2.Animation<U> drive<U>(_i2.Animatable<U>? child) => (super.noSuchMethod(
+        Invocation.method(
+          #drive,
+          [child],
+        ),
+        returnValue: _FakeAnimation_0<U>(
+          this,
+          Invocation.method(
+            #drive,
+            [child],
+          ),
+        ),
+        returnValueForMissingStub: _FakeAnimation_0<U>(
+          this,
+          Invocation.method(
+            #drive,
+            [child],
+          ),
+        ),
+      ) as _i2.Animation<U>);
+  @override
+  void didRegisterListener() => super.noSuchMethod(
+        Invocation.method(
+          #didRegisterListener,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void didUnregisterListener() => super.noSuchMethod(
+        Invocation.method(
+          #didUnregisterListener,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void clearListeners() => super.noSuchMethod(
+        Invocation.method(
+          #clearListeners,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void notifyListeners() => super.noSuchMethod(
+        Invocation.method(
+          #notifyListeners,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void clearStatusListeners() => super.noSuchMethod(
+        Invocation.method(
+          #clearStatusListeners,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void notifyStatusListeners(_i2.AnimationStatus? status) => super.noSuchMethod(
+        Invocation.method(
+          #notifyStatusListeners,
+          [status],
+        ),
+        returnValueForMissingStub: null,
+      );
 }

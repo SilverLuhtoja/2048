@@ -1,7 +1,7 @@
 import 'package:flutter/animation.dart';
-import 'package:my_2048/src/game_state.dart';
 
 import 'game_board.dart';
+import 'game_state.dart';
 
 class GameLogic {
   late AnimationController controller;
@@ -33,9 +33,7 @@ class GameLogic {
     return false;
   }
 
-  // THIS DOES A LOT OF THINGS
-  // TODO: try to refactor
-  List<Tile> mergeTiles(List<Tile> tiles) {
+  List<Tile> moveAndMergeTiles(List<Tile> tiles) {
     for (int i = 0; i < tiles.length; i++) {
       // skip current iteration amount, it is already assigned
       Iterable<Tile> nonZeroTiles =
@@ -46,13 +44,13 @@ class GameLogic {
         Tile nextValuedTile = nonZeroTiles
             .skip(1)
             .firstWhere((tile) => tile.value != 0, orElse: () => Tile.empty());
+
         // if current iteration tile is not the same as firstValuedTile
         // OR next valued tile is not null, we can merge tiles
         if (tiles[i] != firstValuedTile || nextValuedTile.value != -1) {
-          
           // this value will rewrite tiles[i], no matter what was there
           int resultValue = firstValuedTile.value;
-          
+
           firstValuedTile.moveTo(controller, tiles[i].x, tiles[i].y);
           if (nextValuedTile.value == firstValuedTile.value) {
             resultValue += nextValuedTile.value;
@@ -70,9 +68,9 @@ class GameLogic {
     return tiles;
   }
 
-
   bool isGameOver() {
-    Iterable<Tile> zeroValueList = gameBoard.flat_grid().where((e) => e.value == 0);
+    Iterable<Tile> zeroValueList =
+        gameBoard.flat_grid().where((e) => e.value == 0);
     if (gameSetting.topValue == 2048) return true;
 
     // still some moves left

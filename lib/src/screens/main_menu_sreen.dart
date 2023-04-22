@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_2048/src/game_state.dart';
 import 'package:my_2048/src/screens/game_screen.dart';
 
+import '../models/game_state.dart';
 import '../utils/filer.dart';
 
 class MainMenu extends StatefulWidget {
@@ -13,6 +13,7 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   late GameState gameState;
+
   ButtonStyle checkIfSelected(int selectedValue, int targetValue) {
     if (selectedValue == targetValue) {
       return const ButtonStyle(

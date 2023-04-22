@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_2048/src/components/score_box.dart';
 import 'package:my_2048/src/constants.dart';
-import 'package:my_2048/src/game_board.dart';
-import 'package:my_2048/src/game_logic.dart';
-import 'package:my_2048/src/game_state.dart';
+import 'package:my_2048/src/models/game_board.dart';
+import 'package:my_2048/src/models/game_logic.dart';
 import 'package:my_2048/src/utils/filer.dart';
+
+import '../models/game_state.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key, required this.gameState});
@@ -26,6 +27,26 @@ class _GameScreenState extends State<GameScreen>
   late GameLogic gameLogic;
   bool isGameOver = false;
   bool canMakeMove = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    gameState = widget.gameState;
+    controller = AnimationController(vsync: this, duration: animationSpeed);
+    gameBoard = GameBoard(gameState.gridSize);
+    gameLogic = GameLogic(controller, gameBoard, gameState);
+
+    gameState.setTopValue(gameBoard.topValue);
+    gameBoard.flat_grid().forEach((e) => e.resetAnimation());
+    controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          gameBoard.flat_grid().forEach((e) => e.resetAnimation());
+        });
+      }
+    });
+  }
 
   double setTileFontSize(int tileValue, int gridSize) {
     bool isLengthOfFour = tileValue >= 1000;
@@ -51,29 +72,9 @@ class _GameScreenState extends State<GameScreen>
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    gameState = widget.gameState;
-    controller = AnimationController(vsync: this, duration: animationSpeed);
-    gameBoard = GameBoard(gameState.gridSize);
-    gameLogic = GameLogic(controller, gameBoard, gameState);
-
-    gameState.setTopValue(gameBoard.topValue);
-    gameBoard.flat_grid().forEach((e) => e.resetAnimation());
-    controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        setState(() {
-          gameBoard.flat_grid().forEach((e) => e.resetAnimation());
-        });
-      }
-    });
-  }
-
   void executeSwipe(List<List<Tile>> grid) {
     slowSwipeDown();
-    grid.forEach((e) => gameLogic.mergeTiles(e));
+    grid.forEach((e) => gameLogic.moveAndMergeTiles(e));
     gameState.setTopValue(gameBoard.topValue);
     setNewTopScore();
     controller.forward(from: 0);
@@ -137,7 +138,7 @@ class _GameScreenState extends State<GameScreen>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            buttonSection(),
+            headerSection(),
             scoreSection(),
             SizedBox(
                 width: gridRowsSize,
@@ -178,14 +179,14 @@ class _GameScreenState extends State<GameScreen>
                                 blurRadius: 5)
                           ]),
                       child: isGameOver
-                          ? gameoverSection()
+                          ? gameOverSection()
                           : Stack(children: stackItems)),
                 )),
           ],
         ));
   }
 
-  Widget gameoverSection() {
+  Widget gameOverSection() {
     return gameState.topValue == 2048
         ? const Center(
             child: Text("Congratulations!\nYou won nothing\nBut lost time",
@@ -217,7 +218,7 @@ class _GameScreenState extends State<GameScreen>
     );
   }
 
-  Row buttonSection() {
+  Row headerSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [

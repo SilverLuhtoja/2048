@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 
-const Color lightBrown = Color.fromARGB(255, 205, 193, 180);
-const Color darkBrown = Color.fromARGB(255, 187, 173, 160);
-const Color orange = Color.fromARGB(255, 245, 149, 99);
-const Color tan = Color.fromARGB(255, 175, 168, 162);
 const Color valueColor = Color.fromARGB(255, 75, 72, 70);
 const Color tileBackgroundColor = Color.fromARGB(255, 122, 108, 98);
 
-
 const Map<int, Color> numTileColor = {
-  2: lightBrown,
-  4: darkBrown,
+  2: Color.fromARGB(255, 205, 193, 180),
+  4: Color.fromARGB(255, 187, 173, 160),
   8: Color.fromARGB(255, 242, 177, 121),
   16: Color.fromARGB(255, 245, 149, 99),
   32: Color.fromARGB(255, 246, 124, 95),
@@ -20,18 +15,4 @@ const Map<int, Color> numTileColor = {
   512: const Color.fromARGB(255, 236, 201, 85),
   1024: const Color.fromARGB(255, 229, 194, 90),
   2048: const Color.fromARGB(255, 232, 192, 70),
-};
-
-const Map<int, Color> numTextColor = {
-  2: valueColor,
-  4: valueColor,
-  8: Colors.white,
-  16: Colors.white,
-  32: Colors.white,
-  64: Colors.white,
-  128: Colors.white,
-  256: Colors.white,
-  512: Colors.white,
-  1024: Colors.white,
-  2048: Colors.white,
 };

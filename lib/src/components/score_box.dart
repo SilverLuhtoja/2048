@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ScoreBox extends StatefulWidget {
-  late String text;
-  late int value;
-  ScoreBox(this.text,this.value, {super.key});
+  final String text;
+  final int value;
 
+  const ScoreBox(this.text, this.value, {super.key});
 
   @override
   State<ScoreBox> createState() => _ScoreBoxState();
@@ -21,5 +21,5 @@ class _ScoreBoxState extends State<ScoreBox> {
     );
   }
 
-  TextStyle textStyle() => TextStyle(fontSize: 20);
+  TextStyle textStyle() => const TextStyle(fontSize: 20);
 }

@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:my_2048/src/game_state.dart';
 import 'package:my_2048/src/utils/helpers.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../models/game_state.dart';
 
 const String file_name = 'game_data.txt';
 
