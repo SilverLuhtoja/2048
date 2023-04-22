@@ -1,12 +1,12 @@
 import 'package:flutter/animation.dart';
-import 'package:my_2048/src/game_settings.dart';
+import 'package:my_2048/src/game_state.dart';
 
 import 'game_board.dart';
 
 class GameLogic {
   late AnimationController controller;
   final GameBoard gameBoard;
-  final GameSettings gameSetting;
+  final GameState gameSetting;
 
   GameLogic(this.controller, this.gameBoard, this.gameSetting);
 
@@ -74,10 +74,6 @@ class GameLogic {
     return tiles;
   }
 
-  void resetGame(){
-      gameSetting.reset();
-      gameBoard.reset();
-  }
 
   bool isGameOver() {
     Iterable<Tile> zeroValueList = gameBoard.flat_grid().where((e) => e.value == 0);

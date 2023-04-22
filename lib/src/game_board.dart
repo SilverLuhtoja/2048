@@ -1,11 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/animation.dart';
 
 class GameBoard {
   late List<List<Tile>> grid;
+  late int gridSize;
 
-  GameBoard() {
+  GameBoard(this.gridSize) {
     grid = _generate_grid();
-    addNewNumber(2);
   }
 
   void show() {
@@ -21,7 +23,8 @@ class GameBoard {
   Iterable<Tile> flat_grid() => grid.expand((e) => e);
 
   List<List<Tile>> get gridColumns =>
-      List.generate(4, (x) => List.generate(4, (y) => grid[y][x]));
+      // List.generate(4, (x) => List.generate(4, (y) => grid[y][x]));
+      List.generate(gridSize, (x) => List.generate(gridSize, (y) => grid[y][x]));
 
   List<List<Tile>> get gridColumnsReversed =>
       gridColumns.map((e) => e.reversed.toList()).toList();
@@ -30,15 +33,25 @@ class GameBoard {
       grid.map((e) => e.reversed.toList()).toList();
 
   List<List<Tile>> _generate_grid() {
-    return List.generate(4, (y) => List.generate(4, (x) => Tile(x, y, 0)));
+    // return List.generate(4, (y) => List.generate(4, (x) => Tile(x, y, 0)));
+    Random random = new Random();
+    // List<List<Tile>> generatedList =  List.generate(4, (y) => List.generate(4, (x) => Tile(x, y, 0)));
+    List<List<Tile>> generatedList =  List.generate(gridSize, (y) => List.generate(gridSize, (x) => Tile(x, y, 0)));
+    List<Tile> expandedList = generatedList.expand((e) => e).toList();
+    int numbersToAdd  = random.nextInt(2) + 3;
+
+    expandedList.shuffle();
+    for (int i = 0 ; i < numbersToAdd; i++){
+      expandedList[i].value = random.nextInt(2) > 0 ? 2 : 4;
+    }
+
+    return generatedList;
   }
 
-  void addNewNumber(int numbersToAdd) {
+  void addNewNumber() {
     List<Tile> allZeroedTiles = flat_grid().where((e) => e.value == 0).toList();
     allZeroedTiles.shuffle();
-    for (int i = 0; i < numbersToAdd; i++) {
-      allZeroedTiles[i].value = 2;
-    }
+    allZeroedTiles[0].value = 2;
   }
 
   int get topValue {
@@ -47,10 +60,6 @@ class GameBoard {
     return list.first.value;
   }
 
-  void reset(){
-    grid = _generate_grid();
-    addNewNumber(2);
-  }
 }
 
 class Tile {

@@ -1,11 +1,12 @@
-class GameSettings {
+class GameState {
   int _topValue = 2;
   int _currentScore = 0;
   late int _topScore = 0;
+  late int gridSize;
 
-  GameSettings();
+  GameState([this.gridSize = 4]);
 
-  GameSettings.fromJson(Map<String, dynamic> json) {
+  GameState.fromJson(Map<String, dynamic> json) {
     _topScore = json['top_score']!;
   }
 
@@ -25,9 +26,4 @@ class GameSettings {
 
   bool isCurrentScoreBiggerThanTopScore() =>
       _currentScore > _topScore && currentScore != 0;
-
-  void reset(){
-    setTopValue(2);
-    setCurrentScore(0);
-  }
 }

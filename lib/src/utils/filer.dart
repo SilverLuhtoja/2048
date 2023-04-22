@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:my_2048/src/game_settings.dart';
+import 'package:my_2048/src/game_state.dart';
 import 'package:my_2048/src/utils/helpers.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -17,7 +17,7 @@ Future<File> get _localFile async {
   return File('$path/$file_name').create(recursive: true);
 }
 
-Future<File> writeFile(GameSettings settings) async {
+Future<File> writeFile(GameState settings) async {
   // printWarning("WRITING");
 
   final file = await _localFile;
@@ -30,12 +30,16 @@ Future<int> readFile() async {
   try {
     final file = await _localFile;
     final contents = await file.readAsString();
-    GameSettings values = GameSettings.fromJson(jsonDecode(contents));
+    GameState values = GameState.fromJson(jsonDecode(contents));
 
     return values.topScore;
   } catch (e) {
+    GameState gamestate = GameState();
+    gamestate.setTopScore(0);
+    writeFile(gamestate);
+    readFile();
     printError(e.toString());
     printError("ERROR: Can not return $file_name content");
-    return -1;
+    return 0;
   }
 }

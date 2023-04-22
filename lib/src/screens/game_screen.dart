@@ -3,11 +3,13 @@ import 'package:my_2048/src/components/score_box.dart';
 import 'package:my_2048/src/constants.dart';
 import 'package:my_2048/src/game_board.dart';
 import 'package:my_2048/src/game_logic.dart';
-import 'package:my_2048/src/game_settings.dart';
+import 'package:my_2048/src/game_state.dart';
 import 'package:my_2048/src/utils/filer.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+  const GameScreen({super.key, required this.gameState});
+
+  final GameState gameState;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -15,32 +17,49 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
-  GameBoard gameBoard = GameBoard();
-  GameSettings gameSettings = GameSettings();
+  late GameBoard gameBoard;
+  late GameState gameState;
   late AnimationController controller;
   late GameLogic gameLogic;
   bool isGameOver = false;
 
+  double setTileFontSize(int tileValue, int gridSize) {
+    bool isLengthOfFour = tileValue >= 1000;
+    // bool isLengthOfFour = tileValue < 1000 ? 20 : 16;
+    switch (gridSize) {
+      case 6:
+        return isLengthOfFour ? 16 : 20;
+      case 5:
+        return isLengthOfFour ? 20 : 25;
+    }
+    return isLengthOfFour ? 25 : 35;
+  }
+
   void initTopScore() =>
-      readFile().then((value) => gameSettings.setTopScore(value));
+      readFile().then((value) => gameState.setTopScore(value));
 
   void setNewTopScore() {
-    if (gameSettings.isCurrentScoreBiggerThanTopScore()) {
-      gameSettings.setTopScore(gameSettings.currentScore);
-      writeFile(gameSettings);
+    if (gameState.isCurrentScoreBiggerThanTopScore()) {
+      gameState.setTopScore(gameState.currentScore);
+      writeFile(gameState);
     }
   }
 
   @override
   void initState() {
     super.initState();
+    gameState = widget.gameState;
     controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200));
-    gameLogic = GameLogic(controller, gameBoard, gameSettings);
-    initTopScore();
+    gameBoard = GameBoard(gameState.gridSize);
+    gameLogic = GameLogic(controller, gameBoard, gameState);
 
-    gameBoard.grid[0][0].value = 1024;
-    gameBoard.grid[1][0].value = 1024;
+    initTopScore();
+    gameState.setTopValue(gameBoard.topValue);
+    gameBoard.flat_grid().forEach((e) => e.resetAnimation());
+
+    // gameBoard.grid[0][0].value = 1024;
+    // gameBoard.grid[3][0].value = 256;
 
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -49,23 +68,21 @@ class _GameScreenState extends State<GameScreen>
         });
       }
     });
-
-    gameBoard.flat_grid().forEach((e) => e.resetAnimation());
   }
 
   void executeSwipe(List<List<Tile>> grid) {
     grid.forEach((e) => gameLogic.mergeTiles(e));
-    gameSettings.setTopValue(gameBoard.topValue);
+    gameState.setTopValue(gameBoard.topValue);
     setNewTopScore();
     controller.forward(from: 0);
-    gameBoard.addNewNumber(1);
+    gameBoard.addNewNumber();
     if (gameLogic.isGameOver()) setState(() => isGameOver = true);
   }
 
   @override
   Widget build(BuildContext context) {
     double gridRowsSize = MediaQuery.of(context).size.width - 16.0 * 2;
-    double tileSize = (gridRowsSize - 4.0 * 2) / 4;
+    double tileSize = (gridRowsSize - 4.0 * 2) / gameState.gridSize;
     List<Widget> stackItems = [];
 
     stackItems.addAll(gameBoard.flat_grid().map((e) => Positioned(
@@ -102,7 +119,8 @@ class _GameScreenState extends State<GameScreen>
                           e.animatedValue.value.toString(),
                           style: TextStyle(
                               color: e.value <= 4 ? valueColor : Colors.white,
-                              fontSize: 35,
+                              fontSize: setTileFontSize(
+                                  e.animatedValue.value, gameState.gridSize),
                               fontWeight: FontWeight.bold),
                         )),
                       )),
@@ -166,19 +184,16 @@ class _GameScreenState extends State<GameScreen>
   }
 
   Widget gameoverSection() {
-    return gameSettings.topValue == 2048
-        ? Center(child: Container(child: Text("Congratzzzzz,\n YOu Won")))
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("No moves left"),
-              TextButton(
-                  onPressed: () {},
-                  style: FilledButton.styleFrom(
-                      foregroundColor: tileBackgroundColor),
-                  child: Text("Go Again")),
-            ],
-          );
+    return gameState.topValue == 2048
+        ? Center(
+            child: Container(
+                child: Text("Congratulations!\nYou won nothing\nBut lost time",
+                    style: TextStyle(fontSize: 30))))
+        : Center(
+            child: Container(
+                child: Text(
+                    "--GameOver--\nNo moves left\nStop trying !\nGo enjoy Sun :D",
+                    style: TextStyle(fontSize: 30))));
   }
 
   Container scoreSection() {
@@ -192,9 +207,9 @@ class _GameScreenState extends State<GameScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          ScoreBox("Top Score :", gameSettings.topScore),
-          ScoreBox("Current Score :", gameSettings.currentScore),
-          ScoreBox("Top Value :", gameSettings.topValue),
+          ScoreBox("Top Score :", gameState.topScore),
+          ScoreBox("Current Score :", gameState.currentScore),
+          ScoreBox("Top Value :", gameState.topValue),
         ],
       ),
     );
@@ -217,14 +232,20 @@ class _GameScreenState extends State<GameScreen>
           children: [
             FilledButton(
                 onPressed: () => setState(() {
-                      isGameOver = false;
-                      gameLogic.resetGame();
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => super.widget));
+                      // isGameOver = false;
+                      // gameLogic.resetGame();
                     }),
                 style: FilledButton.styleFrom(
                     backgroundColor: tileBackgroundColor),
                 child: const Text("New Game")),
             FilledButton(
-                onPressed: null,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 style: FilledButton.styleFrom(
                     backgroundColor: tileBackgroundColor),
                 child: const Text("Back to Main Menu")),

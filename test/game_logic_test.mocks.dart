@@ -4,8 +4,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:my_2048/src/game_board.dart' as _i3;
-import 'package:my_2048/src/game_settings.dart' as _i2;
+import 'package:my_2048/src/game_state.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -18,10 +17,10 @@ import 'package:my_2048/src/game_settings.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-/// A class which mocks [GameSettings].
+/// A class which mocks [GameState].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGameSettings extends _i1.Mock implements _i2.GameSettings {
+class MockGameState extends _i1.Mock implements _i2.GameState {
   @override
   Map<String, int> toJson() => (super.noSuchMethod(
         Invocation.method(
@@ -64,82 +63,4 @@ class MockGameSettings extends _i1.Mock implements _i2.GameSettings {
         returnValue: false,
         returnValueForMissingStub: false,
       ) as bool);
-}
-
-/// A class which mocks [GameBoard].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockGameBoard extends _i1.Mock implements _i3.GameBoard {
-  @override
-  List<List<_i3.Tile>> get grid => (super.noSuchMethod(
-        Invocation.getter(#grid),
-        returnValue: <List<_i3.Tile>>[],
-        returnValueForMissingStub: <List<_i3.Tile>>[],
-      ) as List<List<_i3.Tile>>);
-  @override
-  set grid(List<List<_i3.Tile>>? _grid) => super.noSuchMethod(
-        Invocation.setter(
-          #grid,
-          _grid,
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  List<List<_i3.Tile>> get gridColumns => (super.noSuchMethod(
-        Invocation.getter(#gridColumns),
-        returnValue: <List<_i3.Tile>>[],
-        returnValueForMissingStub: <List<_i3.Tile>>[],
-      ) as List<List<_i3.Tile>>);
-  @override
-  List<List<_i3.Tile>> get gridColumnsReversed => (super.noSuchMethod(
-        Invocation.getter(#gridColumnsReversed),
-        returnValue: <List<_i3.Tile>>[],
-        returnValueForMissingStub: <List<_i3.Tile>>[],
-      ) as List<List<_i3.Tile>>);
-  @override
-  List<List<_i3.Tile>> get gridReversed => (super.noSuchMethod(
-        Invocation.getter(#gridReversed),
-        returnValue: <List<_i3.Tile>>[],
-        returnValueForMissingStub: <List<_i3.Tile>>[],
-      ) as List<List<_i3.Tile>>);
-  @override
-  int get topValue => (super.noSuchMethod(
-        Invocation.getter(#topValue),
-        returnValue: 0,
-        returnValueForMissingStub: 0,
-      ) as int);
-  @override
-  void show() => super.noSuchMethod(
-        Invocation.method(
-          #show,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  Iterable<_i3.Tile> flat_grid() => (super.noSuchMethod(
-        Invocation.method(
-          #flat_grid,
-          [],
-        ),
-        returnValue: <_i3.Tile>[],
-        returnValueForMissingStub: <_i3.Tile>[],
-      ) as Iterable<_i3.Tile>);
-  @override
-  Iterable<_i3.Tile> flat_column_grid() => (super.noSuchMethod(
-        Invocation.method(
-          #flat_column_grid,
-          [],
-        ),
-        returnValue: <_i3.Tile>[],
-        returnValueForMissingStub: <_i3.Tile>[],
-      ) as Iterable<_i3.Tile>);
-  @override
-  void addNewNumber(int? numbersToAdd) => super.noSuchMethod(
-        Invocation.method(
-          #addNewNumber,
-          [numbersToAdd],
-        ),
-        returnValueForMissingStub: null,
-      );
 }

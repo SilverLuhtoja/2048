@@ -3,8 +3,9 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:my_2048/src/game_board.dart';
 import 'package:my_2048/src/game_logic.dart';
-@GenerateNiceMocks([MockSpec<GameSettings>()])
-import 'package:my_2048/src/game_settings.dart';
+
+@GenerateNiceMocks([MockSpec<GameState>()])
+import 'package:my_2048/src/game_state.dart';
 
 import 'game_logic_test.mocks.dart';
 import 'test_helpers.dart';
@@ -33,20 +34,20 @@ void main() {
 
   group('GameLogic.isGameOver - is game over', () {
     late AnimationControllerMock controller;
-    late MockGameSettings mockGameSetting;
+    late MockGameState mockGameState;
     late GameBoard gameBoard;
     late GameLogic logic;
     const winCase = 2048;
 
     setUp(() {
       controller = AnimationControllerMock();
-      mockGameSetting = MockGameSettings();
-      gameBoard = GameBoard();
-      logic = GameLogic(controller, gameBoard, mockGameSetting);
+      mockGameState = MockGameState();
+      gameBoard = GameBoard(4);
+      logic = GameLogic(controller, gameBoard, mockGameState);
     });
 
     test('when currentScore == 2048, it returns true', () {
-      when(mockGameSetting.topValue).thenReturn(winCase);
+      when(mockGameState.topValue).thenReturn(winCase);
       expect(logic.isGameOver(), isTrue);
     });
 
