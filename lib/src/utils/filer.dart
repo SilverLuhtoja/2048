@@ -34,12 +34,16 @@ Future<int> readFile() async {
 
     return values.topScore;
   } catch (e) {
-    GameState gamestate = GameState();
-    gamestate.setTopScore(0);
-    writeFile(gamestate);
-    readFile();
+    initFileData();
     printError(e.toString());
     printError("ERROR: Can not return $file_name content");
     return 0;
   }
+}
+
+void initFileData() {
+  GameState gamestate = GameState();
+  gamestate.setTopScore(0);
+  writeFile(gamestate);
+  readFile();
 }

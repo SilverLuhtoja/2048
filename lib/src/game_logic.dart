@@ -18,11 +18,6 @@ class GameLogic {
 
   bool canSwipeDown() => gameBoard.gridColumnsReversed.any(isSwipeAble);
 
-  // static bool canSwipeLeft(List<List<Tile>> grid) => grid.any(canSwipe);
-  // static bool canSwipeUp(List<List<Tile>> grid) => grid.any(canSwipe);
-  // static bool canSwipeRight(List<List<Tile>> grid) => grid.map((e) => e.reversed.toList()).any(canSwipe);
-  // static bool canSwipeDown(List<List<Tile>> grid) => grid.map((e) => e.reversed.toList()).any(canSwipe);
-
   static bool isSwipeAble(List<Tile> tiles) {
     for (int i = 0; i < tiles.length; i++) {
       if (tiles[i].value == 0) {
@@ -52,18 +47,19 @@ class GameLogic {
             .skip(1)
             .firstWhere((tile) => tile.value != 0, orElse: () => Tile.empty());
         // if current iteration tile is not the same as firstValuedTile
-        // OR next valued tile is not null, we can move and merge tiles
+        // OR next valued tile is not null, we can merge tiles
         if (tiles[i] != firstValuedTile || nextValuedTile.value != -1) {
+          
           // this value will rewrite tiles[i], no matter what was there
           int resultValue = firstValuedTile.value;
+          
           firstValuedTile.moveTo(controller, tiles[i].x, tiles[i].y);
-
           if (nextValuedTile.value == firstValuedTile.value) {
             resultValue += nextValuedTile.value;
             nextValuedTile.moveTo(controller, tiles[i].x, tiles[i].y);
             nextValuedTile.changeTileValue(controller, resultValue);
-            nextValuedTile.value = 0;
             firstValuedTile.changeTileValue(controller, 0);
+            nextValuedTile.value = 0;
             gameSetting.setCurrentScore(gameSetting.currentScore + resultValue);
           }
           firstValuedTile.value = 0;

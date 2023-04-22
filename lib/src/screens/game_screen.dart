@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:my_2048/src/components/score_box.dart';
 import 'package:my_2048/src/constants.dart';
@@ -17,15 +19,16 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
+  final Duration animationSpeed = const Duration(milliseconds: 200);
   late GameBoard gameBoard;
   late GameState gameState;
   late AnimationController controller;
   late GameLogic gameLogic;
   bool isGameOver = false;
+  bool canMakeMove = true;
 
   double setTileFontSize(int tileValue, int gridSize) {
     bool isLengthOfFour = tileValue >= 1000;
-    // bool isLengthOfFour = tileValue < 1000 ? 20 : 16;
     switch (gridSize) {
       case 6:
         return isLengthOfFour ? 16 : 20;
@@ -35,8 +38,11 @@ class _GameScreenState extends State<GameScreen>
     return isLengthOfFour ? 25 : 35;
   }
 
-  void initTopScore() =>
-      readFile().then((value) => gameState.setTopScore(value));
+  void slowSwipeDown() async {
+    setState(() => canMakeMove = false);
+    await Future.delayed(animationSpeed);
+    setState(() => canMakeMove = true);
+  }
 
   void setNewTopScore() {
     if (gameState.isCurrentScoreBiggerThanTopScore()) {
@@ -48,19 +54,14 @@ class _GameScreenState extends State<GameScreen>
   @override
   void initState() {
     super.initState();
+
     gameState = widget.gameState;
-    controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 200));
+    controller = AnimationController(vsync: this, duration: animationSpeed);
     gameBoard = GameBoard(gameState.gridSize);
     gameLogic = GameLogic(controller, gameBoard, gameState);
 
-    initTopScore();
     gameState.setTopValue(gameBoard.topValue);
     gameBoard.flat_grid().forEach((e) => e.resetAnimation());
-
-    // gameBoard.grid[0][0].value = 1024;
-    // gameBoard.grid[3][0].value = 256;
-
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
@@ -71,6 +72,7 @@ class _GameScreenState extends State<GameScreen>
   }
 
   void executeSwipe(List<List<Tile>> grid) {
+    slowSwipeDown();
     grid.forEach((e) => gameLogic.mergeTiles(e));
     gameState.setTopValue(gameBoard.topValue);
     setNewTopScore();
@@ -137,31 +139,31 @@ class _GameScreenState extends State<GameScreen>
           children: [
             buttonSection(),
             scoreSection(),
-            Container(
+            SizedBox(
                 width: gridRowsSize,
                 height: gridRowsSize,
                 child: GestureDetector(
                   onVerticalDragEnd: (details) {
                     double dy = details.velocity.pixelsPerSecond.dy;
-                    if (dy < 250 && gameLogic.canSwipeUp() && !isGameOver) {
-                      // print("up");
+                    if (dy < 250 && gameLogic.canSwipeUp() && canMakeMove) {
+                      // UP
                       executeSwipe(gameBoard.gridColumns);
                     }
-                    if (dy > -250 && gameLogic.canSwipeDown() && !isGameOver) {
-                      // print("down");
+                    if (dy > -250 && gameLogic.canSwipeDown() && canMakeMove) {
+                      // DOWN
                       executeSwipe(gameBoard.gridColumnsReversed);
                     }
                   },
                   onHorizontalDragEnd: (details) {
                     double dx = details.velocity.pixelsPerSecond.dx;
-                    if (dx < 1000 && gameLogic.canSwipeLeft() && !isGameOver) {
-                      // print("left");
+                    if (dx < 1000 && gameLogic.canSwipeLeft() && canMakeMove) {
+                      // LEFT
                       executeSwipe(gameBoard.grid);
                     }
                     if (dx > -1000 &&
                         gameLogic.canSwipeRight() &&
-                        !isGameOver) {
-                      // print("right");
+                        canMakeMove) {
+                      // RIGHT
                       executeSwipe(gameBoard.gridReversed);
                     }
                   },
@@ -185,15 +187,15 @@ class _GameScreenState extends State<GameScreen>
 
   Widget gameoverSection() {
     return gameState.topValue == 2048
-        ? Center(
-            child: Container(
-                child: Text("Congratulations!\nYou won nothing\nBut lost time",
-                    style: TextStyle(fontSize: 30))))
-        : Center(
-            child: Container(
-                child: Text(
-                    "--GameOver--\nNo moves left\nStop trying !\nGo enjoy Sun :D",
-                    style: TextStyle(fontSize: 30))));
+        ? const Center(
+            child: Text("Congratulations!\nYou won nothing\nBut lost time",
+                style: TextStyle(fontSize: 30)),
+          )
+        : const Center(
+            child: Text(
+                "--GameOver--\nNo moves left\nStop trying !\nGo enjoy Sun :D",
+                style: TextStyle(fontSize: 30)),
+          );
   }
 
   Container scoreSection() {
@@ -231,24 +233,22 @@ class _GameScreenState extends State<GameScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FilledButton(
-                onPressed: () => setState(() {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => super.widget));
-                      // isGameOver = false;
-                      // gameLogic.resetGame();
-                    }),
-                style: FilledButton.styleFrom(
-                    backgroundColor: tileBackgroundColor),
-                child: const Text("New Game")),
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => super.widget));
+              },
+              style:
+                  FilledButton.styleFrom(backgroundColor: tileBackgroundColor),
+              child: const Text("New Game"),
+            ),
             FilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: FilledButton.styleFrom(
-                    backgroundColor: tileBackgroundColor),
-                child: const Text("Back to Main Menu")),
+              onPressed: () => Navigator.pop(context),
+              style:
+                  FilledButton.styleFrom(backgroundColor: tileBackgroundColor),
+              child: const Text("Back to Main Menu"),
+            ),
           ],
         )
       ],

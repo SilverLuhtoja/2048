@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_2048/src/game_state.dart';
 import 'package:my_2048/src/screens/game_screen.dart';
 
+import '../utils/filer.dart';
+
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
 
@@ -10,15 +12,25 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-  int selectedGridSize = 4;
-
+  late GameState gameState;
   ButtonStyle checkIfSelected(int selectedValue, int targetValue) {
     if (selectedValue == targetValue) {
-      return ButtonStyle(
+      return const ButtonStyle(
           backgroundColor: MaterialStatePropertyAll<Color>(Colors.green));
     }
-    return ButtonStyle(
+    return const ButtonStyle(
         backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey));
+  }
+
+  void initTopScore() =>
+      readFile().then((value) => gameState.setTopScore(value));
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    gameState = GameState(4);
+    initTopScore();
   }
 
   @override
@@ -29,13 +41,13 @@ class _MainMenuState extends State<MainMenu> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: EdgeInsets.only(bottom: 40),
+              margin: const EdgeInsets.only(bottom: 40),
               width: MediaQuery.of(context).size.width * 0.8,
               child: gridSizeContainer("Select GridSize"),
             ),
             FilledButton(
               onPressed: () {
-                GameState gameState = GameState(selectedGridSize);
+                // GameState gameState = GameState(selectedGridSize);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -43,18 +55,11 @@ class _MainMenuState extends State<MainMenu> {
                           GameScreen(gameState: gameState)),
                 );
               },
-              child: Text("Lets Play!"),
+              child: const Text("Lets Play!"),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Container formLabel(BuildContext context, String text) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
-      child: gridSizeContainer(text),
     );
   }
 
@@ -78,8 +83,8 @@ class _MainMenuState extends State<MainMenu> {
 
   FilledButton gridSizeButton(int value) {
     return FilledButton(
-        onPressed: () => setState(() => selectedGridSize = value),
-        style: checkIfSelected(selectedGridSize, value),
+        onPressed: () => setState(() => gameState.gridSize = value),
+        style: checkIfSelected(gameState.gridSize, value),
         child: Text("$value x $value"));
   }
 }
