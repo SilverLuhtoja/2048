@@ -54,9 +54,9 @@ class _GameScreenState extends State<GameScreen>
       case 6:
         return isLengthOfFour ? 16 : 20;
       case 5:
-        return isLengthOfFour ? 20 : 25;
+        return isLengthOfFour ? 20 : 24;
     }
-    return isLengthOfFour ? 25 : 35;
+    return isLengthOfFour ? 24 : 28;
   }
 
   void slowSwipeDown() async {
